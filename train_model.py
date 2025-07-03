@@ -11,8 +11,14 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 
 # Download NLTK resources
-nltk.download('stopwords')
-nltk.download('punkt')
+try:
+    stopwords.words('english')
+except LookupError:
+    nltk.download('stopwords')
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt')
 
 # Load dataset
 df = pd.read_csv("data/fake_news.csv")
@@ -31,6 +37,7 @@ def preprocess_text(text):
     return ' '.join(tokens)
 
 df['processed_text'] = df['full_text'].apply(preprocess_text)
+print(df.head())
 
 # Split data
 x = df['processed_text']

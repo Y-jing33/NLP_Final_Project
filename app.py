@@ -6,9 +6,15 @@ from nltk.stem import PorterStemmer
 import re
 import string
 
-# Load NLTK resources
-nltk.download('punkt')
-nltk.download('stopwords')
+# Download NLTK resources
+try:
+    stopwords.words('english')
+except LookupError:
+    nltk.download('stopwords')
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt')
 
 app = Flask(__name__)
 
