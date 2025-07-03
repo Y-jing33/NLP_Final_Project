@@ -42,13 +42,27 @@ def predict():
     try:
         data = request.get_json()
         article_text = data.get('article_text', '')
+        
+        if not article_text.strip():
+            return jsonify({'error': 'Please enter some text to analyze'}), 400
+        
         preprocessed_text = preprocess_text(article_text)
         tfidf_text = tfidf_vectorizer.transform([preprocessed_text])
         prediction = pac.predict(tfidf_text)[0]
-        confidence = pac.decision_function(tfidf_text)[0]
-        normalized_confidence = float((confidence - pac.decision_function(tfidf_text).min()) /
-                                       (pac.decision_function(tfidf_text).max() - pac.decision_function(tfidf_text).min() + 1e-6))
-        return jsonify({'prediction': prediction, 'confidence': normalized_confidence})
+        
+        # Get decision function score
+        decision_score = pac.decision_function(tfidf_text)[0]
+        
+        # Calculate confidence using sigmoid function to normalize the decision score
+        # This gives a more meaningful probability-like value
+        import numpy as np
+        confidence = 1 / (1 + np.exp(-abs(decision_score)))
+        
+        return jsonify({
+            'prediction': prediction, 
+            'confidence': float(confidence),
+            'decision_score': float(decision_score)
+        })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
