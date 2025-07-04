@@ -36,7 +36,7 @@ Requirements
 Installation
 
 Clone the repository:  
-git clone [https://github.com/Myhfuz88Sk/fake-news-detector.git](https://github.com/Y-jing33/NLP_Final_Project.git)
+git clone [https://github.com/Y-jing33/NLP_Final_Project.git]
 
 Install dependencies:  
 pip install flask pandas scikit-learn nltk joblib
